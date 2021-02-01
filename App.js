@@ -1,11 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import styled from 'styled-components/native'
+import Constants from 'expo-constants';
 
 const Container = styled.SafeAreaView`
   flex:1;
+  padding-top: ${Constants.statusBarHeight}px;
 `
+const KeyboardAvoidingView = styled.KeyboardAvoidingView`
+  flex:1;
+`
+
 const Contents = styled.ScrollView`
   flex:1;
   padding:8px 24px;
@@ -25,6 +31,7 @@ const TodoItem = styled.View`
   flex:1;
   flex-direction:row;
   align-items:center;
+  margin-bottom:5px;
 `
 const TodoItemText = styled.Text`
   flex:1;
@@ -38,18 +45,31 @@ const TempText = styled.Text`
 `
 
 export default function App() {
+  const [list, setList] = React.useState([
+    {id:'1', todo:'할일 1'},
+    {id:'2', todo:'할일 2'},
+  ])
+  const todoList = list.map(item=>{
+    return (
+      <TodoItem key={item.id}>
+        <TodoItemText>{item.todo}</TodoItemText>
+        <TodoItemButton title="삭제" onPress={()=>{}} />
+      </TodoItem>
+    )
+  })
   return (
     <Container>
-      <Contents>
-        <TodoItem>
-          <TodoItemText>할일 1</TodoItemText>
-          <TodoItemButton title="삭제" onPress={()=>{}} />
-        </TodoItem>
-      </Contents>
-      <InputContainer>
-        <Input />
-        <Button title="전송" onPress={()=>{}}/>
-      </InputContainer>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <Contents>
+            {todoList}
+        </Contents>
+        <InputContainer>
+          <Input />
+          <Button title="전송" onPress={()=>{}}/>
+        </InputContainer>
+      </KeyboardAvoidingView>
     </Container>
   );
 }
